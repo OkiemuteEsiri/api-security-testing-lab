@@ -1,0 +1,26 @@
+[
+  {
+    "endpoint": "/api/v1/orders/{id}",
+    "method": "GET",
+    "auth_required": true,
+    "object_authorization": true,
+    "rate_limit": true,
+    "response_fields": ["id", "status", "total"]
+  },
+  {
+    "endpoint": "/api/v1/profile/{id}",
+    "method": "GET",
+    "auth_required": true,
+    "object_authorization": false,
+    "rate_limit": true,
+    "response_fields": ["id", "name", "email", "internal_notes"]
+  },
+  {
+    "endpoint": "/api/v1/search",
+    "method": "POST",
+    "auth_required": false,
+    "object_authorization": false,
+    "rate_limit": false,
+    "response_fields": ["results"]
+  }
+]
