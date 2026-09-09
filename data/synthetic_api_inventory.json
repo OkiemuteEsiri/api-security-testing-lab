@@ -1,26 +1,6 @@
 [
-  {
-    "endpoint": "/api/v1/orders/{id}",
-    "method": "GET",
-    "auth_required": true,
-    "object_authorization": true,
-    "rate_limit": true,
-    "response_fields": ["id", "status", "total"]
-  },
-  {
-    "endpoint": "/api/v1/profile/{id}",
-    "method": "GET",
-    "auth_required": true,
-    "object_authorization": false,
-    "rate_limit": true,
-    "response_fields": ["id", "name", "email", "internal_notes"]
-  },
-  {
-    "endpoint": "/api/v1/search",
-    "method": "POST",
-    "auth_required": false,
-    "object_authorization": false,
-    "rate_limit": false,
-    "response_fields": ["results"]
-  }
+  {"path":"/api/v1/customers/{id}","method":"GET","auth_required":true,"auth_scheme":"bearer-jwt","object_authorization":false,"function_authorization":true,"rate_limit_per_minute":120,"max_request_kb":64,"response_fields":["id","name","email","internal_notes"],"allowed_content_types":["application/json"],"owner":"customer-platform","internet_exposed":true,"business_criticality":"high"},
+  {"path":"/api/v1/admin/users","method":"POST","auth_required":true,"auth_scheme":"bearer-jwt","object_authorization":true,"function_authorization":false,"rate_limit_per_minute":30,"max_request_kb":128,"response_fields":["id","status"],"allowed_content_types":["application/json"],"owner":"identity-platform","internet_exposed":false,"business_criticality":"critical"},
+  {"path":"/api/v1/import","method":"POST","auth_required":true,"auth_scheme":"basic","object_authorization":true,"function_authorization":true,"rate_limit_per_minute":null,"max_request_kb":null,"response_fields":["job_id","status"],"allowed_content_types":["application/json","application/xml"],"owner":"integration-platform","internet_exposed":true,"business_criticality":"high"},
+  {"path":"/api/v1/health","method":"GET","auth_required":false,"auth_scheme":"none","object_authorization":true,"function_authorization":true,"rate_limit_per_minute":300,"max_request_kb":8,"response_fields":["status"],"allowed_content_types":["application/json"],"owner":"platform-engineering","internet_exposed":true,"business_criticality":"medium"}
 ]
