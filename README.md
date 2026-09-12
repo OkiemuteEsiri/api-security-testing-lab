@@ -1,8 +1,29 @@
 # API Security Testing Lab
 
-A recruiter-facing **API Security Engineering** project that turns synthetic API inventory metadata into deterministic security findings, prioritization, remediation guidance, and revalidation evidence.
+A recruiter-facing **API Security Engineering** project that turns synthetic API inventory metadata into deterministic security findings, contextual prioritization, remediation guidance, and revalidation evidence.
 
 This project is deliberately defensive: it evaluates local JSON metadata and does **not** send attack traffic, target production APIs, use credentials, or automate exploitation.
+
+## Recruiter Quick Review
+
+For a focused technical review, start with:
+
+1. `src/controls.py` — implemented authorization, authentication, availability, data-minimization, parser-surface, and ownership controls;
+2. `src/scoring.py` — contextual prioritization logic;
+3. `tests/test_api_security_audit.py` — validation coverage;
+4. `reports/example-assessment.md` — synthetic analyst-facing output;
+5. `docs/control-validation-matrix.md` — control-to-evidence and revalidation traceability;
+6. `docs/recruiter-review.md` — capability-to-evidence map and review sequence.
+
+| Recruiter signal | Evidence |
+| --- | --- |
+| Security engineering | deterministic control engine and canonical data model |
+| API security | OWASP API Security Top 10-aligned control checks |
+| Risk prioritization | severity, exposure, and business-criticality separation |
+| Remediation discipline | explicit closure and revalidation workflow |
+| Secure automation | fail-closed input validation and deterministic output |
+| Engineering quality | unit tests, offline CLI, example report, and GitHub Actions |
+| Threat-informed design | MITRE ATT&CK used as defensive context, not compromise evidence |
 
 ## Problem Statement
 
@@ -35,7 +56,7 @@ data/synthetic_api_inventory.json
  Markdown / JSON evidence
               |
               v
- remediation -> inventory update -> re-run
+ remediation -> inventory update -> re-run -> evidence
 ```
 
 See `docs/architecture.md` for design details.
@@ -52,12 +73,16 @@ See `docs/architecture.md` for design details.
 | API-006 | Content-type minimization | OWASP API8:2023 Security Misconfiguration |
 | API-007 | Internet-facing ownership | OWASP API9:2023 Inventory Management |
 
+The detailed validation expectations for each control are documented in `docs/control-validation-matrix.md`.
+
 ## Repository Structure
 
 ```text
 .github/workflows/ci.yml
 data/synthetic_api_inventory.json
 docs/architecture.md
+docs/control-validation-matrix.md
+docs/recruiter-review.md
 docs/remediation-validation.md
 docs/testing-methodology.md
 reports/example-assessment.md
@@ -84,7 +109,9 @@ No third-party Python packages are required.
 
 ## Prioritization Design
 
-The engine separates **finding evidence** from **business context**. Severity reflects the control gap, while internet exposure and business criticality influence ordering. The posture score is a bounded lab metric for comparing synthetic inventories; it is not a compliance certification or breach-likelihood model.
+The engine separates **finding evidence** from **business context**. Severity reflects the control gap, while internet exposure and business criticality influence ordering. The posture score is a bounded lab metric for comparing synthetic inventories; it is not a compliance certification, exploitability score, or breach-likelihood model.
+
+This separation is intentional: business context can increase remediation urgency without rewriting the underlying technical observation.
 
 ## MITRE ATT&CK Context
 
@@ -94,25 +121,30 @@ The engine separates **finding evidence** from **business context**. Severity re
 | T1190 — Exploit Public-Facing Application | Context for weaknesses on exposed application/API surfaces |
 | T1499 — Endpoint Denial of Service | Context for missing resource-consumption guardrails |
 
-ATT&CK mappings provide threat context only and are not claims of adversary activity.
+ATT&CK mappings provide defensive threat context only. They are **not** claims of exploitation, compromise, adversary intent, attribution, or incident status.
 
-## Remediation and Validation
+## Remediation and Revalidation
 
 Every finding includes both a remediation action and a validation objective. The expected workflow is:
 
-1. assign the finding to the API owner;
-2. implement the control in code, gateway, or identity policy;
-3. update the approved inventory/specification;
-4. re-run the assessment;
-5. verify the original control ID closes;
-6. perform authorized regression/integration tests;
-7. preserve evidence for closure.
+1. assign the finding to the accountable API owner;
+2. confirm the intended security contract;
+3. implement the control in application code, gateway configuration, or identity policy;
+4. retain implementation evidence and the associated change reference;
+5. update the approved inventory/specification;
+6. re-run the assessment and confirm the original control condition no longer appears;
+7. perform authorized regression/integration testing for the affected security invariant;
+8. retain post-change evidence for closure.
 
-See `docs/remediation-validation.md`.
+A ticket closure alone is not technical validation. Risk acceptance is also distinct from remediation: an approved exception may alter governance status, but it does not remove the technical exposure.
+
+See `docs/remediation-validation.md` and `docs/control-validation-matrix.md`.
 
 ## CI/CD Security Quality
 
-The GitHub Actions workflow uses read-only repository permissions and performs source compilation, unit-test execution, a synthetic end-to-end report-generation smoke test, and output validation. CI success demonstrates only that these repository checks passed for a commit; it does not validate a live API.
+The GitHub Actions workflow uses read-only repository permissions and performs source compilation, unit-test execution, a synthetic end-to-end report-generation smoke test, and output validation.
+
+A green workflow is meaningful only for the **exact commit** that produced it. CI success demonstrates that repository checks passed for that commit; it does not validate a live API or production environment.
 
 ## Skills Demonstrated
 
@@ -128,12 +160,22 @@ The GitHub Actions workflow uses read-only repository permissions and performs s
 - GitHub Actions security-quality gates
 - MITRE ATT&CK contextual mapping
 
+## Documentation
+
+- `docs/recruiter-review.md` — fast technical review path and capability-to-evidence map
+- `docs/architecture.md` — components, boundaries, and data flow
+- `docs/testing-methodology.md` — assessment method and control logic
+- `docs/control-validation-matrix.md` — control, evidence, remediation, and revalidation matrix
+- `docs/remediation-validation.md` — technical closure workflow
+- `reports/example-assessment.md` — example synthetic assessment output
+
 ## Limitations
 
 - No live API requests are sent.
 - No DAST, fuzzing, credential testing, or exploit automation is implemented.
 - Metadata declarations can drift from implementation.
 - The control set is intentionally focused rather than a complete verification standard.
+- The scoring model is a deterministic prioritization aid, not a quantitative prediction of compromise.
 - Production adoption would require approved integration tests, code review, gateway/identity configuration review, telemetry validation, and organization-specific risk criteria.
 
 ## Roadmap
